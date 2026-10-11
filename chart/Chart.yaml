@@ -1,0 +1,6 @@
+apiVersion: v2
+name: classifier
+description: HTTP service for the kumarabd1996/agent-task-classifier laya model (CPU).
+type: application
+version: 0.1.0
+appVersion: latest
