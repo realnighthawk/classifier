@@ -31,9 +31,5 @@ Scale with replicas, not uvicorn workers (each worker loads its own copy of the 
 
 ## Deploy
 
-```
-helm upgrade --install classifier chart -n core
-```
-
-Creates `classifier-svc` (port 8000). The infra LiteLLM chart forwards `POST /classify` to
-`http://classifier-svc.core.svc:8000/classify`.
+Deployed by the `classifier` block of the infra `model` chart (`classifier-svc`, port 8000), and
+reached through LiteLLM's `/classify` pass-through route.
