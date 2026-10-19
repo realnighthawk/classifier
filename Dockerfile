@@ -9,7 +9,7 @@ RUN pip install --no-cache-dir torch --index-url https://download.pytorch.org/wh
  && pip install --no-cache-dir "laya[serve]==0.4.1" fastapi uvicorn
 # bake weights so pods start offline (public repo, no token)
 RUN python -c "import laya,os;from huggingface_hub import hf_hub_download as d;m=os.environ['MODEL_ID'];r=os.environ['MODEL_REVISION'];laya.load(m,device='cpu',revision=r);d(m,'questions.json',revision=r)"
-COPY app.py /app/app.py
+COPY app.py state.py /app/
 WORKDIR /app
 RUN useradd --system --uid 10003 clf && chmod -R a+rX /opt/hf
 USER clf

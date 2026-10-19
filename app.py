@@ -7,6 +7,8 @@ from fastapi import FastAPI
 from huggingface_hub import hf_hub_download
 from pydantic import BaseModel
 
+from state import state_for
+
 MODEL = os.environ.get("MODEL_ID", "kumarabd1996/agent-task-classifier")
 REVISION = os.environ.get("MODEL_REVISION")  # set in the image; unset runs main
 agent = laya.load(MODEL, device="cpu", revision=REVISION)
@@ -22,9 +24,7 @@ class Req(BaseModel):
 
 @app.post("/classify")
 def classify(r: Req):
-    # continuation format the model was trained on
-    state = f"Earlier request: {r.earlier}\nNew request: {r.text}" if r.earlier else r.text
-    a = agent.predict(state, questions)["answers"]["loop"]
+    a = agent.predict(state_for(r.text, r.earlier), questions)["answers"]["loop"]
     return {"label": a["choice"], "probabilities": a["probabilities"]}
 
 
