@@ -2,7 +2,8 @@
 
 HTTP service for [`kumarabd1996/agent-task-classifier`](https://huggingface.co/kumarabd1996/agent-task-classifier),
 a fine-tuned laya model that labels a request by the agent-loop shape it demands
-(conversation, diagnose, research, arrange, acquire, execute, make, tend, learn, companion, react).
+(conversation, companion, learn, diagnose, research, produce, transact, stabilize, plan — taxonomy v2;
+v1's eleven labels are in the model repo's history).
 
 CPU only, ~3 GB RAM, ~0.3 s/query. Weights are baked into the image, so it starts offline.
 
@@ -16,7 +17,8 @@ curl localhost:8000/classify -H 'content-type: application/json' \
 
 - `POST /classify` `{text, earlier?}` — `earlier` is the request being continued.
 - `GET /healthz`
-- Build another checkpoint: `docker build --build-arg MODEL_ID=<hf repo> .`
+- Build another checkpoint: `docker build --build-arg MODEL_ID=<hf repo> --build-arg MODEL_REVISION=<commit sha> .`
+  (`MODEL_REVISION` is pinned in the Dockerfile; bumping it is also what refreshes CI's cached weights layer.)
 
 Behind LiteLLM (pass-through):
 
