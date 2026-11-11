@@ -35,3 +35,16 @@ Scale with replicas, not uvicorn workers (each worker loads its own copy of the 
 
 Deployed by the `classifier` block of the infra `model` chart (`classifier-svc`, port 8000), and
 reached through LiteLLM's `/classify` pass-through route.
+
+## Triage (shadow mode)
+
+A second checkpoint, [`kumarabd1996/agent-triage-classifier`](https://huggingface.co/kumarabd1996/agent-triage-classifier), says what to do with a
+request (`answer`, `ask`, `start_task`, `schedule`, `act`, `unsure`) rather than what shape it has. Same pod, same rules as the classifier: baked in at
+a pinned commit (`TRIAGE_MODEL_REVISION` in the Dockerfile), no token, offline at runtime. Set `TRIAGE_MODEL_ID` empty to run without it.
+
+```
+curl localhost:8000/triage -H 'content-type: application/json' -d '{"text":"remind me to call Sam at 5pm tomorrow"}'
+# {"decision":"schedule","probabilities":{...}}
+```
+
+`/healthz` reports `triage: true|false`. Roughly 2 GB more memory; the infra chart's `classifier.resources` is sized for both.
